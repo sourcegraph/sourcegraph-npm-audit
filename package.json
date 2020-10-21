@@ -1,0 +1,101 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sourcegraph/sourcegraph/main/client/shared/src/schema/extension.schema.json",
+  "name": "npm-audit",
+  "description": "Audits node modules",
+  "publisher": "sourcegraph",
+  "activationEvents": [
+    "*"
+  ],
+  "wip": true,
+  "categories": [],
+  "tags": [],
+  "contributes": {
+    "actions": [
+      {
+        "id": "npmAudit.openPanel",
+        "command": "openPanel",
+        "commandArguments": [
+          "npmAudit.panel"
+        ],
+        "category": "npm audit",
+        "title": "Show panel",
+        "actionItem": {
+          "label": "npm audit",
+          "description": "See vulnerabilities of modules imported in this file"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [],
+      "commandPalette": [
+        {
+          "action": "npmAudit.openPanel",
+          "when": "(resource.language === 'javascript') || (resource.language === 'typescript')"
+        }
+      ]
+    },
+    "configuration": {
+      "npmAudit.corsAnywhereUrl": {
+        "description": "The URL to a CORS proxy.",
+        "type": "string",
+        "default": "https://cors-anywhere.herokuapp.com"
+      }
+    }
+  },
+  "version": "0.0.0-DEVELOPMENT",
+  "license": "Apache-2.0",
+  "main": "dist/npmAudit.js",
+  "scripts": {
+    "eslint": "eslint 'src/**/*.ts'",
+    "typecheck": "tsc -p tsconfig.json",
+    "build": "parcel build --out-file dist/npmAudit.js src/npmAudit.ts",
+    "symlink-package": "mkdirp dist && lnfs ./package.json ./dist/package.json",
+    "serve": "yarn run symlink-package && parcel serve --no-hmr --out-file dist/npmAudit.js src/npmAudit.ts",
+    "watch:typecheck": "tsc -p tsconfig.json -w",
+    "watch:build": "tsc -p tsconfig.dist.json -w",
+    "sourcegraph:prepublish": "yarn run typecheck && yarn run build",
+    "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' mocha --require ts-node/register --require source-map-support/register --opts mocha.opts",
+    "cover": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' nyc --require ts-node/register --require source-map-support/register --all mocha --opts mocha.opts --timeout 10000"
+  },
+  "nyc": {
+    "extension": [
+      ".tsx",
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts?(x)"
+    ],
+    "exclude": [
+      "**/*.test.ts?(x)",
+      "**/*.d.ts",
+      "**/*.js"
+    ]
+  },
+  "browserslist": [
+    "last 1 Chrome versions",
+    "last 1 Firefox versions",
+    "last 1 Edge versions",
+    "last 1 Safari versions"
+  ],
+  "devDependencies": {
+    "@sourcegraph/eslint-config": "^0.20.11",
+    "@sourcegraph/extension-api-stubs": "^1.2.2",
+    "@sourcegraph/tsconfig": "^4.0.1",
+    "@types/mocha": "^8.0.3",
+    "@types/mock-require": "^2.0.0",
+    "eslint": "^7.11.0",
+    "lnfs-cli": "^2.1.0",
+    "mkdirp": "^1.0.4",
+    "mocha": "^5.2.0",
+    "mock-require": "^3.0.3",
+    "parcel-bundler": "^1.12.4",
+    "sinon": "^9.2.0",
+    "source-map-support": "^0.5.19",
+    "sourcegraph": "^24.7.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "rxjs": "^6.6.3"
+  }
+}
