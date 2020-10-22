@@ -155,6 +155,7 @@ export function getClosestPackageJSON(filePath: string, paths: string[]): number
             const maybePath = cwd.blobs[depfile]
             if (maybePath !== undefined) {
                 deepestAncestorPackage = maybePath
+                break
             }
         }
         cwd = cwd.trees[component]
