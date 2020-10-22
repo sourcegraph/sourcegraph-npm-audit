@@ -12,7 +12,7 @@ import * as sourcegraph from 'sourcegraph'
 const auditDecorationType = sourcegraph.app.createDecorationType()
 
 interface Configuration {
-    'npmModuleAudit.corsAnywhereUrl'?: string
+    'npmAudit.corsAnywhereUrl'?: string
 }
 
 const getConfig = (): Configuration => sourcegraph.configuration.get<Configuration>().value
@@ -37,7 +37,7 @@ export function activate(context: sourcegraph.ExtensionContext): void {
             .pipe(
                 switchMap(async ([editor, config]) => {
                     const corsAnywhereUrl =
-                        (config['npmModuleAudit.corsAnywhereUrl']?.replace(/\/$/, '') ||
+                        (config['npmAudit.corsAnywhereUrl']?.replace(/\/$/, '') ||
                             'https://cors-anywhere.herokuapp.com') + '/'
 
                     const uri = new URL(editor.document.uri)
@@ -262,15 +262,7 @@ export function packageToAuditBody(packageJSONString: string): string {
         dependencies[name] = { version }
     }
 
-    const auditBody: {
-        requires: Record<string, string>
-        dependencies: Record<string, { version: string; dev?: boolean }>
-    } = {
-        requires,
-        dependencies,
-    }
-
-    return JSON.stringify(auditBody)
+    return JSON.stringify({ requires, dependencies })
 }
 
 /**
