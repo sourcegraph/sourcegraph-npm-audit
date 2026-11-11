@@ -1,5 +1,4 @@
-import { combineLatest, EMPTY, from } from 'rxjs'
-import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
+import { combineLatest, distinctUntilChanged, EMPTY, filter, from, map, switchMap } from 'rxjs'
 import * as sourcegraph from 'sourcegraph'
 
 /**
